@@ -38,6 +38,7 @@
 #define SYSTEMTICK_PERIOD_MS  10
 extern int g_net_state;
 
+__IO uint32_t message_count=0;
 /*--------------- LCD Messages ---------------*/
 #if defined (STM32F40XX)
 #define MESSAGE1   "    STM32F40/41x     "
@@ -78,6 +79,7 @@ int main(void)
        system_stm32f4xx.c file
      */  
 	int i;
+u8_t   send_buf[1024]={0};
   GPIO_InitTypeDef GPIO_InitStructure;
 	
   /* Enable GPIOs clocks */
@@ -114,26 +116,17 @@ int main(void)
 #endif
   /*Initialize LCD and Leds */
   //LCD_LED_BUTTON_Init();
-	//iprintf("in main\n");
-  printf("in main\n");
-  printf("in main\n");printf("in main\n");printf("in main\n");printf("in main\n");
   /* Configure ethernet (GPIOs, clocks, MAC, DMA) */
   ETH_BSP_Config();
-  printf("here12\n");
   /* Initilaize the LwIP stack */
   LwIP_Init();
-  printf("here11\n");
-  for(i=0;i<20;i++)
-  {
-		if(g_net_state==0)
-	  tcp_echoclient_connect();
-		Delay(100);
-  }
-  printf("here13\n");
+  tcp_echoclient_connect();
 
   /* Infinite loop */
   while (1)
   {  
+	sprintf((char*)send_buf, "sending tcp client message %d", message_count++);
+	tcp_send_data(send_buf,strlen(send_buf));
     /* check if any packet received */
     if (ETH_CheckFrameReceived())
     { 

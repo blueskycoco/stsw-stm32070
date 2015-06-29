@@ -35,6 +35,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void tcp_echoclient_connect(void);
+void tcp_send_data(char *data,int len);
 
 #endif /* __TCP_ECHOCLIENT_H__ */
 
