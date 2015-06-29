@@ -77,6 +77,7 @@ int main(void)
        To reconfigure the default setting of SystemInit() function, refer to
        system_stm32f4xx.c file
      */  
+	int i;
   GPIO_InitTypeDef GPIO_InitStructure;
 	
   /* Enable GPIOs clocks */
@@ -122,9 +123,11 @@ int main(void)
   /* Initilaize the LwIP stack */
   LwIP_Init();
   printf("here11\n");
-  if(g_net_state==0)
+  for(i=0;i<20;i++)
   {
+		if(g_net_state==0)
 	  tcp_echoclient_connect();
+		Delay(100);
   }
   printf("here13\n");
 
