@@ -78,6 +78,7 @@ int main(void)
        system_stm32f4xx.c file
      */  
 	int i;
+	u8_t data[512];
   GPIO_InitTypeDef GPIO_InitStructure;
 	
   /* Enable GPIOs clocks */
@@ -125,6 +126,7 @@ int main(void)
   /* Infinite loop */
   while (1)
   {  
+		
     /* check if any packet received */
     if (ETH_CheckFrameReceived())
     { 
