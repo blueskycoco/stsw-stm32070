@@ -115,21 +115,12 @@ int main(void)
   /*Initialize LCD and Leds */
   //LCD_LED_BUTTON_Init();
 	//iprintf("in main\n");
-  printf("in main\n");
-  printf("in main\n");printf("in main\n");printf("in main\n");printf("in main\n");
   /* Configure ethernet (GPIOs, clocks, MAC, DMA) */
   ETH_BSP_Config();
-  printf("here12\n");
   /* Initilaize the LwIP stack */
   LwIP_Init();
-  printf("here11\n");
-  for(i=0;i<20;i++)
-  {
 		if(g_net_state==0)
 	  tcp_echoclient_connect();
-		Delay(100);
-  }
-  printf("here13\n");
 
   /* Infinite loop */
   while (1)
