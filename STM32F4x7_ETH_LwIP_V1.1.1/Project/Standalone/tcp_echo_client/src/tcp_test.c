@@ -42,8 +42,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 u8_t  recev_buf[1024];
+u8_t data[512];
 
-
+	int cnt=0;
 struct tcp_pcb *echoclient_pcb;
 
 
@@ -73,7 +74,7 @@ static err_t tcp_echoclient_poll(void *arg, struct tcp_pcb *tpcb);
 static err_t tcp_echoclient_sent(void *arg, struct tcp_pcb *tpcb, u16_t len);
 static void tcp_echoclient_send(struct tcp_pcb *tpcb, struct echoclient * es);
 static err_t tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb, err_t err);
-
+void tcp_send_data(char *data,int len);
 /* Private functions ---------------------------------------------------------*/
 
 
@@ -125,12 +126,12 @@ static err_t tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb, err_t err
 	  g_net_state = ES_CONNECTED;
       es->pcb = tpcb;
       g_es=es;
-      //sprintf((char*)data, "sending tcp client message %d", message_count);
+      sprintf((char*)data, "sending tcp client message 1");
         
       /* allocate pbuf */
       //es->p_tx = pbuf_alloc(PBUF_TRANSPORT, strlen((char*)data) , PBUF_POOL);
          
-      if (es->p_tx)
+      //if (es->p_tx)
       {       
         /* copy data to pbuf */
         //pbuf_take(es->p_tx, (char*)data, strlen((char*)data));
@@ -145,8 +146,8 @@ static err_t tcp_echoclient_connected(void *arg, struct tcp_pcb *tpcb, err_t err
         tcp_sent(tpcb, tcp_echoclient_sent);
   
         /* initialize LwIP tcp_poll callback function */
-        tcp_poll(tpcb, tcp_echoclient_poll, 1);
-    
+        //tcp_poll(tpcb, tcp_echoclient_poll, 1);
+				//printf("socket connected\n");
         /* send data */
         //tcp_echoclient_send(tpcb,es);
         
@@ -186,7 +187,7 @@ static err_t tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
   LWIP_ASSERT("arg != NULL",arg != NULL);
   
   es = (struct echoclient *)arg;
-  
+
   /* if we receive an empty tcp frame from server => close connection */
   if (p == NULL)
   {
@@ -221,9 +222,14 @@ static err_t tcp_echoclient_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p
     /* Acknowledge data reception */
     tcp_recved(tpcb, p->tot_len);  
     memcpy(recev_buf,p->payload,p->tot_len);
-	for(i=0;i<p->tot_len;i++)
+		for(i=0;i<p->tot_len;i++)
 		printf("%c",recev_buf[i]);
-    //pbuf_free(p);
+		if(g_net_state==1)
+		{
+			sprintf((char*)data, "sending tcp client message %d\r\n",cnt++);
+      tcp_send_data(data,strlen(data));
+		}
+    pbuf_free(p);
     //tcp_echoclient_connection_close(tpcb, es);
     ret_err = ERR_OK;
   }

@@ -79,7 +79,7 @@ int main(void)
        system_stm32f4xx.c file
      */  
 	int i;
-u8_t   send_buf[1024]={0};
+	u8_t data[512];
   GPIO_InitTypeDef GPIO_InitStructure;
 	
   /* Enable GPIOs clocks */
@@ -116,17 +116,17 @@ u8_t   send_buf[1024]={0};
 #endif
   /*Initialize LCD and Leds */
   //LCD_LED_BUTTON_Init();
+	//iprintf("in main\n");
   /* Configure ethernet (GPIOs, clocks, MAC, DMA) */
   ETH_BSP_Config();
   /* Initilaize the LwIP stack */
   LwIP_Init();
-  tcp_echoclient_connect();
+		if(g_net_state==0)
+	  tcp_echoclient_connect();
 
   /* Infinite loop */
   while (1)
   {  
-	sprintf((char*)send_buf, "sending tcp client message %d", message_count++);
-	tcp_send_data(send_buf,strlen(send_buf));
     /* check if any packet received */
     if (ETH_CheckFrameReceived())
     { 
